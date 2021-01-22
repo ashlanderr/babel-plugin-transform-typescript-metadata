@@ -10,7 +10,9 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
 
 function _initializerWarningHelper(descriptor, context) { throw new Error('Decorating class property failed. Please ensure that ' + 'proposal-class-properties is enabled and runs after the decorators transform.'); }
 
-let Self = (_dec = injectable(), _dec2 = (0, _lib.inject)(), _dec3 = Reflect.metadata("design:type", Object), _dec(_class = (_class2 = (_temp = class Self {
+let Self = (_dec = injectable(), _dec2 = (0, _lib.inject)(), _dec3 = Reflect.metadata("design:type", {
+  kind: "object"
+}), _dec(_class = (_class2 = (_temp = class Self {
   constructor() {
     _initializerDefineProperty(this, "child", _descriptor, this);
   }

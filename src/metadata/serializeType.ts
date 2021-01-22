@@ -5,6 +5,12 @@ type InferArray<T> = T extends Array<infer A> ? A : never;
 
 type Parameter = InferArray<t.ClassMethod['params']> | t.ClassProperty;
 
+function createSimpleKind(kind: string) {
+  return t.objectExpression([
+    t.objectProperty(t.identifier('kind'), t.stringLiteral(kind)),
+  ]);
+}
+
 function createVoidZero() {
   return t.unaryExpression('void', t.numericLiteral(0));
 }
@@ -16,7 +22,7 @@ function createVoidZero() {
  * @todo Array and Objects spread are not supported.
  * @todo Rest parameters are not supported.
  */
-function getTypedNode(param: Parameter): t.Identifier | t.ClassProperty | null {
+function getTypedNode(param: Parameter | null): t.Identifier | t.ClassProperty | null {
   if (param == null) return null;
 
   if (param.type === 'ClassProperty') return param;
@@ -33,7 +39,7 @@ function getTypedNode(param: Parameter): t.Identifier | t.ClassProperty | null {
 
 export function serializeType(
   classPath: NodePath<t.ClassDeclaration>,
-  param: Parameter
+  param: Parameter | null
 ) {
   const node = getTypedNode(param);
   if (node == null) return createVoidZero();
@@ -64,7 +70,7 @@ function serializeTypeReferenceNode(
    * ReferenceError at runtime due to babel transpile output.
    */
   if (isClassType(className, reference)) {
-    return t.identifier('Object');
+    return createSimpleKind('object');
   }
 
   /**
@@ -73,7 +79,7 @@ function serializeTypeReferenceNode(
    * `typeof` operator allows us to use the expression even if it is not
    * defined, fallback is just `Object`.
    */
-  return t.conditionalExpression(
+  const safeReference = t.conditionalExpression(
     t.binaryExpression(
       '===',
       t.unaryExpression('typeof', reference),
@@ -82,6 +88,14 @@ function serializeTypeReferenceNode(
     t.identifier('Object'),
     t.cloneDeep(reference)
   );
+
+  return t.objectExpression([
+    t.objectProperty(t.identifier('kind'), t.stringLiteral('reference')),
+    t.objectProperty(t.identifier('type'), safeReference),
+    t.objectProperty(t.identifier('arguments'), t.arrayExpression(
+      node.typeParameters?.params?.map(p => serializeTypeNode(className, p)) ?? []
+    ))
+  ]);
 }
 
 /**
@@ -93,8 +107,10 @@ export function isClassType(className: string, node: t.Expression): boolean {
   switch (node.type) {
     case 'Identifier':
       return node.name === className;
+
     case 'MemberExpression':
       return isClassType(className, node.object);
+
     default:
       throw new Error(
         `The property expression at ${node.start} is not valid as a Type to be used in Reflect.metadata`
@@ -111,10 +127,15 @@ function serializeReference(
   return t.memberExpression(serializeReference(typeName.left), typeName.right);
 }
 
-type SerializedType =
-  | t.Identifier
-  | t.UnaryExpression
-  | t.ConditionalExpression;
+type SerializedType = t.Expression;
+
+function serializeTupleElement(className: string, type: t.TSType | t.TSNamedTupleMember): t.Expression {
+  if (type.type === 'TSNamedTupleMember') {
+    return serializeTypeNode(className, type.elementType);
+  } else {
+    return serializeTypeNode(className, type);
+  }
+}
 
 /**
  * Actual serialization given the TS Type annotation.
@@ -126,61 +147,66 @@ type SerializedType =
  */
 function serializeTypeNode(className: string, node: t.TSType): SerializedType {
   if (node === undefined) {
-    return t.identifier('Object');
+    return createSimpleKind('object');
   }
 
   switch (node.type) {
     case 'TSVoidKeyword':
-    case 'TSUndefinedKeyword':
-    case 'TSNullKeyword':
     case 'TSNeverKeyword':
-      return createVoidZero();
+      return createSimpleKind('void');
+
+    case 'TSUndefinedKeyword':
+      return createSimpleKind('undefined');
+
+    case 'TSNullKeyword':
+      return createSimpleKind('null');
 
     case 'TSParenthesizedType':
       return serializeTypeNode(className, node.typeAnnotation);
 
     case 'TSFunctionType':
     case 'TSConstructorType':
-      return t.identifier('Function');
+      return createSimpleKind('function');
 
     case 'TSArrayType':
+      return t.objectExpression([
+        t.objectProperty(t.identifier('kind'), t.stringLiteral('reference')),
+        t.objectProperty(t.identifier('type'), t.identifier('Array')),
+        t.objectProperty(t.identifier('arguments'), t.arrayExpression([
+          serializeTypeNode(className, node.elementType)
+        ]))
+      ]);
+
     case 'TSTupleType':
-      return t.identifier('Array');
+      return t.objectExpression([
+        t.objectProperty(t.identifier('kind'), t.stringLiteral('tuple')),
+        t.objectProperty(t.identifier('elements'), t.arrayExpression(
+          node.elementTypes.map(t => serializeTupleElement(className, t))
+        ))
+      ]);
 
     case 'TSTypePredicate':
     case 'TSBooleanKeyword':
-      return t.identifier('Boolean');
+      return createSimpleKind('boolean');
 
     case 'TSStringKeyword':
-      return t.identifier('String');
+      return createSimpleKind('string');
 
     case 'TSObjectKeyword':
-      return t.identifier('Object');
+      return createSimpleKind('object');
 
     case 'TSLiteralType':
-      switch (node.literal.type) {
-        case 'StringLiteral':
-          return t.identifier('String');
-
-        case 'NumericLiteral':
-          return t.identifier('Number');
-
-        case 'BooleanLiteral':
-          return t.identifier('Boolean');
-
-        default:
-          /**
-           * @todo Use `path` error building method.
-           */
-          throw new Error('Bad type for decorator' + node.literal);
-      }
+      return t.objectExpression([
+        t.objectProperty(t.identifier('kind'), t.stringLiteral('literal')),
+        t.objectProperty(t.identifier('value'), node.literal),
+      ]);
 
     case 'TSNumberKeyword':
-    case 'TSBigIntKeyword' as any: // Still not in ``@babel/core` typings
-      return t.identifier('Number');
+    case 'TSBigIntKeyword':
+      return createSimpleKind('number');
 
     case 'TSSymbolKeyword':
-      return t.identifier('Symbol');
+      return createSimpleKind('symbol');
 
     case 'TSTypeReference':
       return serializeTypeReferenceNode(className, node);
@@ -192,22 +218,9 @@ function serializeTypeNode(className: string, node: t.TSType): SerializedType {
     case 'TSConditionalType':
       return serializeTypeList(className, [node.trueType, node.falseType]);
 
-    case 'TSTypeQuery':
-    case 'TSTypeOperator':
-    case 'TSIndexedAccessType':
-    case 'TSMappedType':
-    case 'TSTypeLiteral':
-    case 'TSAnyKeyword':
-    case 'TSUnknownKeyword':
-    case 'TSThisType':
-      //case SyntaxKind.ImportType:
-      break;
-
     default:
-      throw new Error('Bad type for decorator');
+      return createSimpleKind('object');
   }
-
-  return t.identifier('Object');
 }
 
 /**
@@ -220,47 +233,10 @@ function serializeTypeList(
   className: string,
   types: ReadonlyArray<t.TSType>
 ): SerializedType {
-  let serializedUnion: SerializedType | undefined;
-
-  for (let typeNode of types) {
-    while (typeNode.type === 'TSParenthesizedType') {
-      typeNode = typeNode.typeAnnotation; // Skip parens if need be
-    }
-    if (typeNode.type === 'TSNeverKeyword') {
-      continue; // Always elide `never` from the union/intersection if possible
-    }
-    if (
-      typeNode.type === 'TSNullKeyword' ||
-      typeNode.type === 'TSUndefinedKeyword'
-    ) {
-      continue; // Elide null and undefined from unions for metadata, just like what we did prior to the implementation of strict null checks
-    }
-    const serializedIndividual = serializeTypeNode(className, typeNode);
-
-    if (
-      t.isIdentifier(serializedIndividual) &&
-      serializedIndividual.name === 'Object'
-    ) {
-      // One of the individual is global object, return immediately
-      return serializedIndividual;
-    }
-    // If there exists union that is not void 0 expression, check if the the common type is identifier.
-    // anything more complex and we will just default to Object
-    else if (serializedUnion) {
-      // Different types
-      if (
-        !t.isIdentifier(serializedUnion) ||
-        !t.isIdentifier(serializedIndividual) ||
-        serializedUnion.name !== serializedIndividual.name
-      ) {
-        return t.identifier('Object');
-      }
-    } else {
-      // Initialize the union type
-      serializedUnion = serializedIndividual;
-    }
-  }
-
-  // If we were able to find common type, use it
-  return serializedUnion || createVoidZero(); // Fallback is only hit if all union constituients are null/undefined/never
+  return t.objectExpression([
+    t.objectProperty(t.identifier('kind'), t.stringLiteral('union')),
+    t.objectProperty(t.identifier('types'), t.arrayExpression(
+      types.map(t => serializeTypeNode(className, t)),
+    )),
+  ]);
 }

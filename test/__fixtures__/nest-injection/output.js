@@ -7,7 +7,19 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
 function _initializerWarningHelper(descriptor, context) { throw new Error('Decorating class property failed. Please ensure that ' + 'proposal-class-properties is enabled and runs after the decorators transform.'); }
 
 import { AppService } from './app.service';
-export let AppController = (_dec = Controller(), _dec2 = Reflect.metadata("design:type", Function), _dec3 = Reflect.metadata("design:paramtypes", [typeof AppService === "undefined" ? Object : AppService]), _dec4 = Inject(), _dec5 = Reflect.metadata("design:type", typeof AppService === "undefined" ? Object : AppService), _dec6 = Inject(), _dec7 = Reflect.metadata("design:type", typeof AppService === "undefined" ? Object : AppService), _dec8 = Get(), _dec9 = Reflect.metadata("design:type", Function), _dec10 = Reflect.metadata("design:paramtypes", []), _dec(_class = _dec2(_class = _dec3(_class = (_class2 = (_temp = class AppController {
+export let AppController = (_dec = Controller(), _dec2 = Reflect.metadata("design:type", Function), _dec3 = Reflect.metadata("design:paramtypes", [{
+  kind: "reference",
+  type: typeof AppService === "undefined" ? Object : AppService,
+  arguments: []
+}]), _dec4 = Inject(), _dec5 = Reflect.metadata("design:type", {
+  kind: "reference",
+  type: typeof AppService === "undefined" ? Object : AppService,
+  arguments: []
+}), _dec6 = Inject(), _dec7 = Reflect.metadata("design:type", {
+  kind: "reference",
+  type: typeof AppService === "undefined" ? Object : AppService,
+  arguments: []
+}), _dec8 = Get(), _dec9 = Reflect.metadata("design:type", Function), _dec10 = Reflect.metadata("design:paramtypes", []), _dec(_class = _dec2(_class = _dec3(_class = (_class2 = (_temp = class AppController {
   constructor(appService) {
     this.appService = appService;
 

@@ -6,7 +6,11 @@ class Injected {}
 
 let MyClass = (_dec = function (target, key) {
   return inject()(target, undefined, 0);
-}, _dec2 = Reflect.metadata("design:type", Function), _dec3 = Reflect.metadata("design:paramtypes", [typeof Injected === "undefined" ? Object : Injected]), _dec(_class = _dec2(_class = _dec3(_class = class MyClass {
+}, _dec2 = Reflect.metadata("design:type", Function), _dec3 = Reflect.metadata("design:paramtypes", [{
+  kind: "reference",
+  type: typeof Injected === "undefined" ? Object : Injected,
+  arguments: []
+}]), _dec(_class = _dec2(_class = _dec3(_class = class MyClass {
   constructor(parameter) {}
 
 }) || _class) || _class) || _class);
@@ -14,13 +18,31 @@ let MyOtherClass = (_dec4 = function (target, key) {
   return inject()(target, undefined, 0);
 }, _dec5 = function (target, key) {
   return inject('KIND')(target, undefined, 1);
-}, _dec6 = Reflect.metadata("design:type", Function), _dec7 = Reflect.metadata("design:paramtypes", [typeof Injected === "undefined" ? Object : Injected, typeof Injected === "undefined" ? Object : Injected]), _dec8 = function (target, key) {
+}, _dec6 = Reflect.metadata("design:type", Function), _dec7 = Reflect.metadata("design:paramtypes", [{
+  kind: "reference",
+  type: typeof Injected === "undefined" ? Object : Injected,
+  arguments: []
+}, {
+  kind: "reference",
+  type: typeof Injected === "undefined" ? Object : Injected,
+  arguments: []
+}]), _dec8 = function (target, key) {
   return demo()(target, key, 0);
-}, _dec9 = Reflect.metadata("design:type", Function), _dec10 = Reflect.metadata("design:paramtypes", [String, void 0]), _dec11 = decorate('named'), _dec12 = function (target, key) {
+}, _dec9 = Reflect.metadata("design:type", Function), _dec10 = Reflect.metadata("design:paramtypes", [{
+  kind: "string"
+}, void 0]), _dec11 = decorate('named'), _dec12 = function (target, key) {
   return inject()(target, key, 0);
 }, _dec13 = function (target, key) {
   return arg()(target, key, 1);
-}, _dec14 = Reflect.metadata("design:type", Function), _dec15 = Reflect.metadata("design:paramtypes", [typeof Injected === "undefined" ? Object : Injected, typeof Schema === "undefined" ? Object : Schema]), _dec4(_class2 = _dec5(_class2 = _dec6(_class2 = _dec7(_class2 = (_class3 = class MyOtherClass {
+}, _dec14 = Reflect.metadata("design:type", Function), _dec15 = Reflect.metadata("design:paramtypes", [{
+  kind: "reference",
+  type: typeof Injected === "undefined" ? Object : Injected,
+  arguments: []
+}, {
+  kind: "reference",
+  type: typeof Schema === "undefined" ? Object : Schema,
+  arguments: []
+}]), _dec4(_class2 = _dec5(_class2 = _dec6(_class2 = _dec7(_class2 = (_class3 = class MyOtherClass {
   constructor(parameter, otherParam) {
     this.parameter = parameter;
   }
@@ -34,9 +56,19 @@ let DecoratedClass = (_dec16 = function (target, key) {
   return inject()(target, undefined, 0);
 }, _dec17 = function (target, key) {
   return inject()(target, undefined, 1);
-}, _dec18 = Reflect.metadata("design:type", Function), _dec19 = Reflect.metadata("design:paramtypes", [typeof Injected === "undefined" ? Object : Injected, typeof Injected === "undefined" ? Object : Injected]), _dec20 = decorate('example'), _dec21 = function (target, key) {
+}, _dec18 = Reflect.metadata("design:type", Function), _dec19 = Reflect.metadata("design:paramtypes", [{
+  kind: "reference",
+  type: typeof Injected === "undefined" ? Object : Injected,
+  arguments: []
+}, {
+  kind: "reference",
+  type: typeof Injected === "undefined" ? Object : Injected,
+  arguments: []
+}]), _dec20 = decorate('example'), _dec21 = function (target, key) {
   return inject()(target, key, 0);
-}, _dec22 = Reflect.metadata("design:type", Function), _dec23 = Reflect.metadata("design:paramtypes", [String]), Decorate(_class4 = _dec16(_class4 = _dec17(_class4 = _dec18(_class4 = _dec19(_class4 = (_class5 = class DecoratedClass {
+}, _dec22 = Reflect.metadata("design:type", Function), _dec23 = Reflect.metadata("design:paramtypes", [{
+  kind: "string"
+}]), Decorate(_class4 = _dec16(_class4 = _dec17(_class4 = _dec18(_class4 = _dec19(_class4 = (_class5 = class DecoratedClass {
   constructor(module, otherModule) {
     this.module = module;
   }

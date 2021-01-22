@@ -4,9 +4,182 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
 
 import { Decorate } from './Decorate';
 const sym = Symbol();
-let Sample = (_dec = Decorate(), _dec2 = Reflect.metadata("design:type", Function), _dec3 = Reflect.metadata("design:paramtypes", [typeof String === "undefined" ? Object : String, typeof Number === "undefined" ? Object : Number, Number, String, Boolean, String, Number, typeof Object === "undefined" ? Object : Object, Function, String, Object, typeof Function === "undefined" ? Object : Function, void 0, void 0, Object, Function, Boolean, Boolean, String]), _dec4 = function (target, key) {
+let Sample = (_dec = Decorate(), _dec2 = Reflect.metadata("design:type", Function), _dec3 = Reflect.metadata("design:paramtypes", [{
+  kind: "reference",
+  type: typeof String === "undefined" ? Object : String,
+  arguments: []
+}, {
+  kind: "reference",
+  type: typeof Number === "undefined" ? Object : Number,
+  arguments: []
+}, {
+  kind: "literal",
+  value: 10
+}, {
+  kind: "literal",
+  value: 'ABC'
+}, {
+  kind: "boolean"
+}, {
+  kind: "string"
+}, {
+  kind: "number"
+}, {
+  kind: "reference",
+  type: typeof Object === "undefined" ? Object : Object,
+  arguments: []
+}, {
+  kind: "function"
+}, {
+  kind: "union",
+  types: [{
+    kind: "literal",
+    value: 'abc'
+  }, {
+    kind: "literal",
+    value: 'def'
+  }]
+}, {
+  kind: "union",
+  types: [{
+    kind: "reference",
+    type: typeof String === "undefined" ? Object : String,
+    arguments: []
+  }, {
+    kind: "reference",
+    type: typeof Number === "undefined" ? Object : Number,
+    arguments: []
+  }]
+}, {
+  kind: "reference",
+  type: typeof Function === "undefined" ? Object : Function,
+  arguments: []
+}, {
+  kind: "null"
+}, {
+  kind: "undefined"
+}, {
+  kind: "object"
+}, {
+  kind: "function"
+}, {
+  kind: "literal",
+  value: false
+}, {
+  kind: "literal",
+  value: true
+}, {
+  kind: "string"
+}]), _dec4 = function (target, key) {
   return Arg()(target, key, 0);
-}, _dec5 = Reflect.metadata("design:type", Function), _dec6 = Reflect.metadata("design:paramtypes", [typeof Symbol === "undefined" ? Object : Symbol, Object, String, void 0, String, String, typeof Maybe === "undefined" ? Object : Maybe, Object, Object, Array, Array, void 0, Boolean, void 0, String, typeof Object === "undefined" ? Object : Object, Object, Number]), _dec7 = Decorate(), _dec8 = Reflect.metadata("design:type", Function), _dec9 = Reflect.metadata("design:paramtypes", [typeof Decorate.Name === "undefined" ? Object : Decorate.Name, typeof Decorate.Name === "undefined" ? Object : Decorate.Name]), _dec10 = Decorate(), _dec11 = Reflect.metadata("design:type", Function), _dec12 = Reflect.metadata("design:paramtypes", [String]), _dec(_class = _dec2(_class = _dec3(_class = (_class2 = class Sample {
+}, _dec5 = Reflect.metadata("design:type", Function), _dec6 = Reflect.metadata("design:paramtypes", [{
+  kind: "reference",
+  type: typeof Symbol === "undefined" ? Object : Symbol,
+  arguments: []
+}, {
+  kind: "object"
+}, {
+  kind: "union",
+  types: [{
+    kind: "string"
+  }, {
+    kind: "null"
+  }]
+}, {
+  kind: "void"
+}, {
+  kind: "union",
+  types: [{
+    kind: "string"
+  }, {
+    kind: "void"
+  }]
+}, {
+  kind: "union",
+  types: [{
+    kind: "string"
+  }, {
+    kind: "null"
+  }]
+}, {
+  kind: "reference",
+  type: typeof Maybe === "undefined" ? Object : Maybe,
+  arguments: [{
+    kind: "string"
+  }]
+}, {
+  kind: "union",
+  types: [{
+    kind: "reference",
+    type: typeof Object === "undefined" ? Object : Object,
+    arguments: []
+  }, {
+    kind: "string"
+  }]
+}, {
+  kind: "union",
+  types: [{
+    kind: "string"
+  }, {
+    kind: "reference",
+    type: typeof MyStringType === "undefined" ? Object : MyStringType,
+    arguments: []
+  }]
+}, {
+  kind: "reference",
+  type: Array,
+  arguments: [{
+    kind: "string"
+  }]
+}, {
+  kind: "tuple",
+  elements: [{
+    kind: "string"
+  }, {
+    kind: "number"
+  }]
+}, {
+  kind: "void"
+}, {
+  kind: "boolean"
+}, {
+  kind: "union",
+  types: [{
+    kind: "null"
+  }, {
+    kind: "undefined"
+  }]
+}, {
+  kind: "union",
+  types: [{
+    kind: "string"
+  }, {
+    kind: "union",
+    types: [{
+      kind: "string"
+    }, {
+      kind: "null"
+    }]
+  }]
+}, {
+  kind: "reference",
+  type: typeof Object === "undefined" ? Object : Object,
+  arguments: []
+}, {
+  kind: "object"
+}, {
+  kind: "number"
+}]), _dec7 = Decorate(), _dec8 = Reflect.metadata("design:type", Function), _dec9 = Reflect.metadata("design:paramtypes", [{
+  kind: "reference",
+  type: typeof Decorate.Name === "undefined" ? Object : Decorate.Name,
+  arguments: []
+}, {
+  kind: "reference",
+  type: typeof Decorate.Name === "undefined" ? Object : Decorate.Name,
+  arguments: []
+}]), _dec10 = Decorate(), _dec11 = Reflect.metadata("design:type", Function), _dec12 = Reflect.metadata("design:paramtypes", [{
+  kind: "string"
+}]), _dec(_class = _dec2(_class = _dec3(_class = (_class2 = class Sample {
   constructor(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18 = 'abc') {
     this.p0 = p0;
   }
